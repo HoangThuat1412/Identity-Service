@@ -18,6 +18,9 @@ public class UserService {
 	public User createUser(UserCreationRequest request) {
 		User user = new User();
 		
+		if(userRepository.existsByUsername(request.getUsername()))
+			throw new RuntimeException("Username exited.");
+		
 		user.setUsername(request.getUsername());
 		user.setPassword(request.getPassword());
 		user.setFirstName(request.getFirstName());
@@ -45,6 +48,8 @@ public class UserService {
 	public List<User> getUsers() {
 		return userRepository.findAll();
 	}
+	
+	
 	
 	public User getUser(String id) {
 		return userRepository.findById(id)
