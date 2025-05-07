@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pokerface.identity_service.dto.request.ApiResponse;
 import com.pokerface.identity_service.dto.request.UserCreationRequest;
 import com.pokerface.identity_service.dto.request.UserUpdateRequest;
 import com.pokerface.identity_service.entity.User;
@@ -26,8 +27,12 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping
-	User createUser(@RequestBody @Valid UserCreationRequest request) {
-		return userService.createUser(request);
+	ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
+		ApiResponse<User> apiResponse = new ApiResponse<User>();
+		
+		apiResponse.setResult(userService.createUser(request));
+		
+		return apiResponse;
 	}
 	
 	@GetMapping
