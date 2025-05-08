@@ -1,6 +1,8 @@
-package com.pokerface.identity_service.dto.request;
+package com.pokerface.identity_service.dto.response;
 
 import java.time.LocalDate;
+
+import com.pokerface.identity_service.dto.request.UserUpdateRequest;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,10 +16,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserUpdateRequest {
+public class UserResponse {
+	String id;
+	String username;
 	String password;
 	String firstName;
 	String lastName;
 	LocalDate dob;
-	
 }
