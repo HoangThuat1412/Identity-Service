@@ -1,7 +1,5 @@
 package com.pokerface.identity_service.dto.request;
 
-import java.time.LocalDate;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
