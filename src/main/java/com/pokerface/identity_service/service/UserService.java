@@ -1,5 +1,6 @@
 package com.pokerface.identity_service.service;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import com.pokerface.identity_service.dto.request.UserCreationRequest;
 import com.pokerface.identity_service.dto.request.UserUpdateRequest;
 import com.pokerface.identity_service.dto.response.UserResponse;
 import com.pokerface.identity_service.entity.User;
+import com.pokerface.identity_service.enums.Role;
 import com.pokerface.identity_service.exception.AppException;
 import com.pokerface.identity_service.exception.ErrorCode;
 import com.pokerface.identity_service.mapper.UserMapper;
@@ -26,15 +28,20 @@ import lombok.experimental.FieldDefaults;
 public class UserService {
 	UserRepository userRepository;
 	UserMapper userMapper;
+	PasswordEncoder passwordEncoder;
 	
-	public User createUser(UserCreationRequest request) {
+	public UserResponse createUser(UserCreationRequest request) {
 		if(userRepository.existsByUsername(request.getUsername()))
 			throw new AppException(ErrorCode.USER_EXISTED);
 		User user = userMapper.toUser(request);
-		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		
-		return userRepository.save(user);
+		HashSet<String> roles = new HashSet<>();
+		roles.add(Role.USER.name());
+		
+		user.setRoles(roles);
+		
+		return userMapper.toUserResponse(userRepository.save(user));
 	}
 	
 	public UserResponse updateUser(String userID, UserUpdateRequest request) {
@@ -50,8 +57,9 @@ public class UserService {
 		userRepository.deleteById(userId);
 	}
 	
-	public List<User> getUsers() {
-		return userRepository.findAll();
+	public List<UserResponse> getUsers() {
+		return userRepository.findAll().stream()
+				.map(userMapper::toUserResponse).toList();
 	}
 	
 	
