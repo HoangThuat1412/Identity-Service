@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -37,10 +34,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class AuthenticationService {
 	UserRepository userRepository;
 	
@@ -112,8 +111,8 @@ public class AuthenticationService {
 	 
 	 private String buildScope(User user) {
 		 StringJoiner stringJoiner = new StringJoiner(" ");
-		 if(!CollectionUtils.isEmpty(user.getRoles()))
-			 user.getRoles().forEach(stringJoiner::add);
+		 // if(!CollectionUtils.isEmpty(user.getRoles()))
+		//	 user.getRoles().forEach(stringJoiner::add);
 		 
 		 return stringJoiner.toString();
 	 }
