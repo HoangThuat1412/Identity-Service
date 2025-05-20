@@ -21,6 +21,7 @@ import com.pokerface.identity_service.enums.Role;
 import com.pokerface.identity_service.exception.AppException;
 import com.pokerface.identity_service.exception.ErrorCode;
 import com.pokerface.identity_service.mapper.UserMapper;
+import com.pokerface.identity_service.repository.RoleRepository;
 import com.pokerface.identity_service.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserService {
 	UserRepository userRepository;
+	RoleRepository roleRepository;
 	UserMapper userMapper;
 	PasswordEncoder passwordEncoder;
 	
@@ -64,9 +66,13 @@ public class UserService {
 	
 	public UserResponse updateUser(String userID, UserUpdateRequest request) {
 		User user = userRepository.findById(userID)
-				.orElseThrow(() -> new RuntimeException("User not found"));
+				.orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 		
 		userMapper.updateUser(user, request);
+		user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+	    var roles = roleRepository.findAllById(request.getRoles());
+	    user.setRoles(new HashSet<>(roles));
 		
 		return userMapper.toUserResponse(userRepository.save(user));
 	}
